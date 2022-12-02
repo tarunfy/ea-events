@@ -1,7 +1,6 @@
-import { Button } from "@chakra-ui/react";
 import moment from "moment/moment";
-import { GiTicket } from "react-icons/gi";
 import { AiOutlineClockCircle } from "react-icons/ai";
+import BookTicket from "../Modal/BookTicket";
 
 const EventCard = ({ eventData }) => {
   return (
@@ -26,9 +25,7 @@ const EventCard = ({ eventData }) => {
             {eventData.duration}
           </h4>
         </div>
-        <Button>
-          Book tickets <GiTicket className="ml-2" />
-        </Button>
+        <BookTicket eventName={eventData.title} />
       </div>
     </div>
   );
