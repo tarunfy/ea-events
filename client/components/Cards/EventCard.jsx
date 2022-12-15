@@ -11,21 +11,21 @@ const EventCard = ({ eventData }) => {
             {eventData.title}
           </h1>
           <p className="text-xs font-semibold">
-            {moment(eventData.date).calendar()}
+            {moment(eventData.event_date).calendar()}
           </p>
         </div>
-        <p className="text-[0.9rem] text-gray-700">{eventData.desc}</p>
+        <p className="text-[0.9rem] text-gray-700">{eventData.description}</p>
       </div>
 
       <div className="flex justify-between items-center py-6 px-3">
         <div className="flex items-center justify-between space-x-3">
-          <h4 className="text-green-500 font-medium">${eventData.fee}</h4>
+          <h4 className="text-green-500 font-medium">${eventData.price}</h4>
           <h4 className="flex items-center font-medium">
             <AiOutlineClockCircle className="mr-1" />
-            {eventData.duration}
+            {eventData.event_from} - {eventData.event_to}
           </h4>
         </div>
-        <BookTicket eventName={eventData.title} />
+        <BookTicket eventData={eventData} />
       </div>
     </div>
   );

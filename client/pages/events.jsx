@@ -1,10 +1,23 @@
 import { Heading } from "@chakra-ui/react";
+import { useEffect, useState } from "react";
 import EventCard from "../components/Cards/EventCard";
 import AddEvent from "../components/Modal/AddEvent";
 import Navbar from "../components/Navbar";
-import { eventData } from "../data/event";
 
 const events = () => {
+  const [events, setEvents] = useState([]);
+
+  useEffect(() => {
+    async function fetchEvents() {
+      const res = await fetch("http://localhost:4000/api/events/");
+      const events = await res.json();
+
+      setEvents(events.data);
+    }
+
+    fetchEvents();
+  }, []);
+
   return (
     <>
       <Navbar />
@@ -14,8 +27,8 @@ const events = () => {
           <AddEvent />
         </div>
         <div className="grid grid-cols-3 gap-8">
-          {[1, 2, 3, 4, 5, 6].map((ele) => (
-            <EventCard key={ele} eventData={eventData} />
+          {events.map((e) => (
+            <EventCard key={e.eventId} eventData={e} />
           ))}
         </div>
       </div>

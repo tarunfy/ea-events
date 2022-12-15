@@ -12,10 +12,33 @@ import {
   ModalOverlay,
   useDisclosure,
 } from "@chakra-ui/react";
+import { useRef } from "react";
 import { GiTicket } from "react-icons/gi";
+import { sendEmail } from "../../utils/emailConfig";
 
-const BookTicket = ({ eventName }) => {
+const BookTicket = ({ eventData }) => {
+  const nameRef = useRef(null);
+  const emailRef = useRef(null);
+  const ticketRef = useRef(null);
   const { isOpen, onOpen, onClose } = useDisclosure();
+
+  console.log(eventData);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      sendEmail({
+        user_email: emailRef.current.value,
+        name: nameRef.current.value,
+        ticketCount: ticketRef.current.value,
+        title: eventData.title,
+      });
+      alert("mail sent");
+      onClose();
+    } catch (err) {
+      console.log(err.message);
+    }
+  };
 
   return (
     <>
@@ -26,21 +49,21 @@ const BookTicket = ({ eventName }) => {
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>{eventName} Tickets</ModalHeader>
+          <ModalHeader>{eventData.eventName} Tickets</ModalHeader>
           <ModalCloseButton />
-          <form>
+          <form onSubmit={handleSubmit}>
             <ModalBody className="space-y-4">
               <FormControl isRequired>
                 <FormLabel>Name</FormLabel>
-                <Input type="text" />
+                <Input ref={nameRef} type="text" />
               </FormControl>
               <FormControl isRequired>
                 <FormLabel>Email</FormLabel>
-                <Input type="email" />
+                <Input ref={emailRef} type="email" />
               </FormControl>
               <FormControl isRequired>
                 <FormLabel>Number of tickets</FormLabel>
-                <Input type="number" />
+                <Input ref={ticketRef} type="number" />
               </FormControl>
             </ModalBody>
 

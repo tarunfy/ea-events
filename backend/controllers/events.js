@@ -9,16 +9,15 @@ let sql;
 //create an event:
 const createEvent = async (req, res) => {
   const data = req.body;
-  console.log(data);
-  sql = `CREATE TABLE events(eventId INTEGER PRIMARY KEY, title TEXT NOT NULL, description TEXT NOT NULL, event_date TEXT NOT NULL, event_from TEXT NOT NULL, event_to TEXT NOT NULL, price INTEGER NOT NULL) VALUES(?, ?, ?, ?, ?, ?)`;
+  sql = `INSERT INTO events(title, description, event_date, event_from, event_to, price) VALUES(?, ?, ?, ?, ?, ?)`;
   db.run(
     sql,
     [
       data.title,
       data.description,
       data.event_date,
-      data.from,
-      data.to,
+      data.event_from,
+      data.event_to,
       data.price,
     ],
     (err) => {
@@ -29,6 +28,18 @@ const createEvent = async (req, res) => {
   res.status(200).json({ data });
 };
 
+//get all events:
+const getAllEvents = (req, res) => {
+  sql = `SELECT * FROM events`;
+  let events = [];
+  db.all(sql, [], (err, rows) => {
+    if (err) return console.log(err);
+    rows.forEach((r) => events.push(r));
+    res.status(200).json({ data: events });
+  });
+};
+
 module.exports = {
   createEvent,
+  getAllEvents,
 };

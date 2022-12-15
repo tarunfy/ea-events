@@ -17,83 +17,68 @@ import { useContext, useRef } from "react";
 import { AuthContext } from "../../context/AuthContext";
 import router from "next/router";
 
-const AddEvent = () => {
+const AddNews = () => {
   const titleRef = useRef(null);
-  const descRef = useRef(null);
-  const dateRef = useRef(null);
-  const fromRef = useRef(null);
-  const toRef = useRef(null);
-  const priceRef = useRef(null);
+  const contentRef = useRef(null);
+  const authorRef = useRef(null);
+  const imgUrlRef = useRef(null);
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const { user } = useContext(AuthContext);
 
-  const handleCreateEvent = async (e) => {
+  const handleCreateNews = async (e) => {
     e.preventDefault();
 
-    const eventData = {
+    const newsData = {
       title: titleRef.current.value,
-      description: descRef.current.value,
-      event_date: dateRef.current.value,
-      event_from: fromRef.current.value,
-      event_to: toRef.current.value,
-      price: +priceRef.current.value,
+      content: contentRef.current.value,
+      author: authorRef.current.value,
+      imgUrl: imgUrlRef.current.value,
+      createdAt: new Date(),
     };
 
     try {
-      const res = await fetch("http://localhost:4000/api/events/create", {
+      await fetch("http://localhost:4000/api/news/create", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(eventData),
+        body: JSON.stringify(newsData),
       });
-
-      await res.json();
-
       router.reload(window.location.pathname);
     } catch (err) {
       console.log(err.message);
     }
+    onClose();
   };
   return (
     <>
       <Button disabled={!user} onClick={onOpen}>
-        Create event
+        Create news
       </Button>
 
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Create new event</ModalHeader>
+          <ModalHeader>Create a news</ModalHeader>
           <ModalCloseButton />
           <form>
             <ModalBody className="space-y-4">
               <FormControl isRequired>
                 <FormLabel>Title</FormLabel>
-                <Input ref={titleRef} type="text" />
+                <Input ref={titleRef} />
               </FormControl>
               <FormControl isRequired>
-                <FormLabel>Description</FormLabel>
-                <Textarea ref={descRef} />
+                <FormLabel>Content</FormLabel>
+                <Textarea ref={contentRef} />
               </FormControl>
               <FormControl isRequired>
-                <FormLabel>Event date</FormLabel>
-                <Input ref={dateRef} type="date" />
+                <FormLabel>Author name</FormLabel>
+                <Input ref={authorRef} />
               </FormControl>
-              <div className="flex items-center space-x-3">
-                <FormControl isRequired>
-                  <FormLabel>From</FormLabel>
-                  <Input ref={fromRef} type="time" />
-                </FormControl>
-                <FormControl isRequired>
-                  <FormLabel>To</FormLabel>
-                  <Input ref={toRef} type="time" />
-                </FormControl>
-              </div>
               <FormControl isRequired>
-                <FormLabel>Price</FormLabel>
-                <Input ref={priceRef} placeholder="Enter price" type="number" />
+                <FormLabel>Image url</FormLabel>
+                <Input ref={imgUrlRef} />
               </FormControl>
             </ModalBody>
 
@@ -107,7 +92,7 @@ const AddEvent = () => {
                 Close
               </Button>
               <Button
-                onClick={handleCreateEvent}
+                onClick={handleCreateNews}
                 type="submit"
                 colorScheme="blue"
               >
@@ -121,4 +106,4 @@ const AddEvent = () => {
   );
 };
 
-export default AddEvent;
+export default AddNews;

@@ -1,15 +1,16 @@
 const express = require("express");
-const sqlite3 = require("sqlite3").verbose();
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const dotenv = require("dotenv");
-const EventRoutes = require("./routes/events");
+const EventRouter = require("./routes/events");
+const NewsRouter = require("./routes/news");
+const Authrouter = require("./routes/auth");
+//const sqlite3 = require("sqlite3").verbose();
 
 //connect to db:
-const db = new sqlite3.Database("./ea.db", sqlite3.OPEN_READWRITE, (err) => {
-  if (err) return console.log(err.message);
-});
-let sql;
+//const db = new sqlite3.Database("./ea.db", sqlite3.OPEN_READWRITE, (err) => {
+//  if (err) return console.log(err.message);
+//});
 
 dotenv.config();
 
@@ -28,40 +29,12 @@ app.use(
 app.use(cookieParser());
 
 //db.run(
-//  `CREATE TABLE events(eventId INTEGER PRIMARY KEY, title TEXT NOT NULL, description TEXT NOT NULL, event_date TEXT NOT NULL, event_from TEXT NOT NULL, event_to TEXT NOT NULL, price INTEGER NOT NULL)`
+//  `CREATE TABLE news(newsId INTEGER PRIMARY KEY, title TEXT NOT NULL, content TEXT NOT NULL, createdAt TEXT NOT NULL, imgUrl TEXT NOT NULL, author TEXT NOT NULL)`
 //);
 
-//Routes:
-app.post("/api/events/create", (req, res) => {
-  const data = req.body;
-  console.log("data", data);
-  sql = `INSERT INTO events(title, description, event_date, event_from, event_to, price ) VALUES(?, ?, ?, ?, ?, ?)`;
-  db.run(
-    sql,
-    [
-      data.title,
-      data.description,
-      data.event_date,
-      data.event_from,
-      data.event_to,
-      data.price,
-    ],
-    (err) => {
-      if (err) return console.log(err.message);
-    }
-  );
-  res.status(200).json({ data });
-});
-
-app.get("/api/events", (req, res) => {
-  sql = `SELECT * FROM events`;
-  let events = [];
-  db.all(sql, [], (err, rows) => {
-    if (err) return console.log(err);
-    rows.forEach((r) => events.push(r));
-    res.status(200).json({ data: events });
-  });
-});
+app.use("/api/events", EventRouter);
+app.use("/api/news", NewsRouter);
+app.use("/api/auth", Authrouter);
 
 app.listen(4000, () => {
   console.log("Server is running on post 4000");
